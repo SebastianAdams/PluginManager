@@ -25,6 +25,9 @@ before_deploy:
   - (cd ./docs/website && yarn install && yarn run build) # Perform the build of the website 
   - cp -r ./docs/website/build/PluginManager/* ./deploy   # Copy the built documentation into the deploy directory
   - cp -r ./docs/javadoc deploy/                          # Copy the javadoc directory into the deplyo directory
+  - git config --global user.name "${GH_NAME}"
+  - git config --global user.email "${GH_EMAIL}"
+  - echo "machine github.com login ${GH_NAME} password ${GH_TOKEN}" > ~/.netrc
 
 deploy:
   provider: pages
