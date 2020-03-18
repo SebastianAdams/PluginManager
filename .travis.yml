@@ -5,6 +5,8 @@ node_js:
 branches:
   only:
     - master
+  ignore: 
+    - gh-pages
 cache:
   yarn: true
 script:
