@@ -9,8 +9,24 @@ branches:
     - gh-pages
 cache:
   yarn: true
-script:
-  - git config --global user.name "${GH_NAME}"
-  - git config --global user.email "${GH_EMAIL}"
-  - echo "machine github.com login ${GH_NAME} password ${GH_TOKEN}" > ~/.netrc
-  - cd docs/website && yarn install && CURRENT_BRANCH=master GIT_USER="${GH_NAME}" yarn run publish-gh-pages
+  
+# script:
+#   - git config --global user.name "${GH_NAME}"
+#   - git config --global user.email "${GH_EMAIL}"
+#   - echo "machine github.com login ${GH_NAME} password ${GH_TOKEN}" > ~/.netrc
+#   - cd docs/website && yarn install && CURRENT_BRANCH=master GIT_USER="${GH_NAME}" yarn run publish-gh-pages
+
+before_deploy:
+  - mkdir -p deploy                                       # Create the deploy directory
+  - (cd ./docs/website && yarn install && yarn run build) # Perform the build of the website 
+  - cp -r ./docs/website/build/PluginManager/* ./deploy   # Copy the built documentation into the deploy directory
+  - cp -r ./docs/javadoc deploy/                          # Copy the javadoc directory into the deplyo directory
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
+  keep_history: true
+  local_dir: deploy  
+  on:
+    branch: master 
